@@ -6,7 +6,7 @@ on:
   pull_request:
 jobs:
   build:
-    name: Build
+    name: Docker Image scan
     runs-on: ubuntu-18.04
     steps:
       - name: Checkout code
@@ -20,8 +20,15 @@ jobs:
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: 'docker.io/sneha0302/docker-vulnerable-dvwa:${{ github.sha }}'
-          format: 'table'
+          format: 'sarif'
           exit-code: '1'
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
+          output: 'trivy-results.sarif'
+          
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v1
+        if: always() 
+        with:
+          sarif_file: 'trivy-results.sarif'
