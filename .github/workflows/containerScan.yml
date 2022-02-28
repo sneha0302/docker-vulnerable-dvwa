@@ -32,3 +32,9 @@ jobs:
         if: always() 
         with:
           sarif_file: 'trivy-results.sarif'
+          
+      - name: Archive Scan results
+        uses: actions/upload-artifact@v2
+        with:
+          name: scan-report
+          path: trivy-results.sarif          
