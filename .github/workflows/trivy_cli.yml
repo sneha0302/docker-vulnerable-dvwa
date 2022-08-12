@@ -18,12 +18,14 @@ jobs:
       
       - name: Run Trivy vulnerability scanner
         run: |
-          sudo apt-get install wget apt-transport-https gnupg lsb-release
-          sudo wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
-          echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee -a /etc/apt/sources.list.d/trivy.list
-          sudo apt-get update
-          sudo apt-get install trivy
-          sudo trivy image -f sarif -o trivy-results.sarif --exit-code 1 docker.io/sneha0302/docker-vulnerable-dvwa:${{ github.sha }}
+         # sudo apt-get install wget apt-transport-https gnupg lsb-release
+          #sudo wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+          #echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee -a /etc/apt/sources.list.d/trivy.list
+          #sudo apt-get update
+          #sudo apt-get install trivy
+          wget https://github.com/aquasecurity/trivy/releases/download/v0.24.1/trivy_0.24.1_Linux-64bit.deb
+          sudo dpkg -i trivy_0.24.1_Linux-64bit.deb 
+          trivy image -f sarif -o trivy-results.sarif --exit-code 1 --security-checks vuln  --download-db-only true  docker.io/sneha0302/docker-vulnerable-dvwa:${{ github.sha }}
           
       - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v1
