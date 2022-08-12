@@ -29,7 +29,8 @@ jobs:
           #------------
           curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v0.24.1
           trivy --version
-          trivy image -f json -o trivy-results.json --exit-code 1 --security-checks vuln  --download-db-only true  docker.io/sneha0302/docker-vulnerable-dvwa:${{ github.sha }}
+          #trivy image -f json -o trivy-results.json --exit-code 1 --security-checks vuln  --download-db-only true  docker.io/sneha0302/docker-vulnerable-dvwa:${{ github.sha }}
+          trivy image --exit-code 1  docker.io/sneha0302/docker-vulnerable-dvwa:${{ github.sha }}
           
      # - name: Upload Trivy scan results to GitHub Security tab
       #  uses: github/codeql-action/upload-sarif@v1
