@@ -7,7 +7,7 @@ on:
 jobs:
   build:
     name: Docker Image scan
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -18,12 +18,12 @@ jobs:
       
       - name: Run Trivy vulnerability scanner
         run: |
-          sudo apt-get install wget apt-transport-https gnupg lsb-release
+          apt-get install wget apt-transport-https gnupg lsb-release
           wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
           echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee -a /etc/apt/sources.list.d/trivy.list
-          sudo apt-get update
-          sudo apt-get install trivy
-          trivy image -f sarif -o results.sarif --exit-code 1 docker.io/sneha0302/docker-vulnerable-dvwa:${{ github.sha }}
+          apt-get update
+          apt-get install trivy
+          trivy image -f sarif -o trivy-results.sarif --exit-code 1 docker.io/sneha0302/docker-vulnerable-dvwa:${{ github.sha }}
           
       - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v1
