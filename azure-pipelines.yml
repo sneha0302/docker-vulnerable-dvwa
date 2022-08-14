@@ -17,9 +17,22 @@ steps:
    trivy image --format sarif --output trivy-results.sarif --exit-code 0  docker.io/sdevsecops221/docker-vulnerable-dvwa:$(Build.BuildNumber)
   displayName: 'Run image scan using Trivy'
 
+
+- task: PublishTestResults@2
+  inputs:
+    # Options: JUnit, NUnit, VSTest, xUnit, cTest
+    testResultsFormat: 'JUnit' 
+    testResultsFiles: 'trivy-results.sarif' 
+    #searchFolder: '$(System.DefaultWorkingDirectory)' # Optional
+    #mergeTestResults: false # Optional
+    #failTaskOnFailedTests: false # Optional
+    testRunTitle: 'Container Scan Results'
+    #buildPlatform: # Optional
+    #buildConfiguration: # Optional
+    #publishRunAttachments: true # Optional
+
 - task: PublishPipelineArtifact@1
   inputs:
     targetPath: 'trivy-results.sarif'
     artifactType: 'pipeline'
     artifactName: 'scan-results'
-
