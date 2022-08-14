@@ -19,7 +19,7 @@ steps:
 
 - task: PublishPipelineArtifact@1
   inputs:
-    targetPath: '$(Pipeline.Workspace)'
+    targetPath: '$(Pipeline.Workspace)/trivy-results.sarif'
     artifactType: 'pipeline'
     artifactName: 'scan-results'
 
