@@ -1,0 +1,19 @@
+trigger:
+- master
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- script: echo Hello, world!
+  displayName: 'Run a one-line script'
+
+- script: docker build -t docker.io/sdevsecops221/docker-vulnerable-dvwa:${{ github.sha }} .
+  displayName: 'Build an image from Dockerfile'
+
+- script: |
+   curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v0.24.1
+   trivy --version         
+   trivy image --format sarif --output trivy-results.sarif --exit-code 0  docker.io/sdevsecops221/docker-vulnerable-dvwa:${{ github.sha }}
+  displayName: 'Run image scan using Trivy'
+
